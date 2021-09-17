@@ -6,6 +6,7 @@ Sustainable tips for any mobile device!
 - [Expo api page](https://expo.dev/)
 - [React Native](https://reactnative.dev/)
 ### Included Expo Libraries/Plugins
-- [SQLite API](https://docs.expo.dev/versions/v42.0.0/sdk/sqlite/)
-- [Calendar API](https://docs.expo.dev/versions/v42.0.0/sdk/calendar/)
-- [Notification API](https://docs.expo.dev/versions/v42.0.0/sdk/notifications/)
+- [SQLite Plugin](https://docs.expo.dev/versions/v42.0.0/sdk/sqlite/)
+- [Calendar Plugin](https://docs.expo.dev/versions/v42.0.0/sdk/calendar/)
+- [Notification Plugin](https://docs.expo.dev/versions/v42.0.0/sdk/notifications/)
+- [React Navigation Plugin](https://reactnavigation.org/docs/getting-started/)
