@@ -1,12 +1,17 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Fontisto } from '@expo/vector-icons';
 
-export default function Header() {
+export default function Header(props) {
+  let {navigation} = props 
   return (
     <View style={styles.header}>
       <Text style={styles.headerText}>Green Alerts </Text>
-      <Fontisto style={styles.gear} name='spinner-cog' color='black' />
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Config')}
+      >
+        <Fontisto style={styles.gear} name='spinner-cog' color='black' />
+      </TouchableOpacity>
     </View>
   );
 }

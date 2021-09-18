@@ -15,14 +15,14 @@ Stack.navigationOptions = ({ navigation }) => {
   };
 };
 
+// onPress={() => navigation.navigate('Config')}
+
 function HomeScreen(props) {
   let { navigation } = props;
   return (
     <View style={styles.container}>
-      <Header />
+      <Header navigation={navigation} />
       <SignUp />
-      <Button title='Settings' onPress={() => navigation.navigate('Config')} />
-      <Text>Open up App.js to start working on your app!</Text>
       <StatusBar style='auto' />
     </View>
   );
