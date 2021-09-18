@@ -1,5 +1,4 @@
 import { NavigationContainer } from '@react-navigation/native';
-import SignUp from './SignUp';
 import React, { useState, createRef } from 'react';
 import {
   Pressable,
