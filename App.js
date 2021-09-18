@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Header from './components/header';
-import Configuration from './components/config';
+import { Configuration } from './components/config';
 
 // Create Navigation Stack (used to move between screens)
 const Stack = createNativeStackNavigator()
