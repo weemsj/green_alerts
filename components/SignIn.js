@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import SignIn from './SignIn';
+import { NavigationContainer } from '@react-navigation/native';
+import SignUp from './SignUp';
 import React, { useState, createRef } from 'react';
 import {
   Pressable,
@@ -9,17 +9,6 @@ import {
   TextInput,
   View,
 } from 'react-native';
-
-function GoToButton({ screenName }) {
-  const navigation = useNavigation();
-
-  return (
-    <Button
-      title={`Go to ${screenName}`}
-      onPress={() => navigation.navigate(screenName)}
-    />
-  );
-}
 
 function Signup() {
   const [name, setName] = React.useState();
@@ -78,7 +67,7 @@ function Signup() {
   };
   return (
     <View>
-      <Text>Signup</Text>
+      <Text>SignIn</Text>
       <TextInput
         style={styles.input}
         type='Name'
