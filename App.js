@@ -8,7 +8,6 @@ import SignUp from './components/SignUp';
 import Configuration from './components/config';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, Button, Platform } from 'react-native';
 
 // Create Navigation Stack (used to move between screens)
@@ -32,22 +31,6 @@ function HomeScreen(props) {
   );
 }
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName='Home'>
-        <Stack.Screen
-          name='Home'
-          component={HomeScreen}
-          options={{ title: 'Landing Page' }}
-        />
-        <Stack.Screen name='Config' component={Configuration} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-
-/* source: docs.expo.dev scheduled-notifications */
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
