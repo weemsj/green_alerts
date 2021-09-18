@@ -1,6 +1,9 @@
 import React, { Component, useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 3acd55508948c7385217ce718dc4db9a429a8a71
 import {
   Platform,
   StyleSheet,
@@ -9,10 +12,13 @@ import {
   View,
   Button,
 } from 'react-native';
+<<<<<<< HEAD
 =======
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Platform } from 'react-native';
 >>>>>>> de6b868c5b5a22013fdcdfccfd940e469a037e14
+=======
+>>>>>>> 3acd55508948c7385217ce718dc4db9a429a8a71
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
@@ -44,6 +50,10 @@ const AppNavigator = createStackNavigator(
     SignIn: {
       screen: SignIn,
     },
+    Config: {
+      screen: Configuration,
+      navigationOptions: {}
+    }
   },
   {
     initialRouteName: 'Home',

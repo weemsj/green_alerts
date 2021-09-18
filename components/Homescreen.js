@@ -12,9 +12,7 @@ function HomeScreen(props) {
   let { navigation } = props;
   return (
     <View style={styles.container}>
-      <Header />
-      <Button title='Settings' onPress={() => navigation.navigate('Config')} />
-      <Text>Open up App.js to start working on your app!</Text>
+      <Header navigation={navigation} />
       <StatusBar style='auto' />
       <Button
         title='Go to SignUp'
