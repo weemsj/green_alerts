@@ -14,6 +14,12 @@ function getDefaultSettings () {
   return [
     {
       id: '0',
+      /*
+        Each category state is persistent saved under a different key
+        "@GreenAlerts/Categories/Food" --> boolean for Food
+        "@GreenAlerts/Categories/Cleaning" --> boolean for Cleaning 
+      */
+      storeKey: '@GreenAlerts/Categories',
       setting: {
         name: 'Categories',
         type: 'toggle',
@@ -28,6 +34,7 @@ function getDefaultSettings () {
     },
     {
       id: '1',
+      storeKey: '@GreenAlerts/Scheduling',
       setting: {
         name: 'Scheduling',
         type: 'select',
@@ -38,28 +45,46 @@ function getDefaultSettings () {
   ]
 }
 
-/*
-export const initializeSettings = async () => {
-  try {
-    const settings = await AsyncStorage.getItem('@GreenAlertSettings')
-    // if settings don't exist setup defaults
-    if (!settings) {
-      await AsyncStorage.setItem('@GreenAlertSettings', JSON.stringify(getDefaultSettings()))
-    }
-  } catch (e) {
-    // error handling code
-  }
-}
-*/
-
 // private component function
 function ToggleOption (props) {
 
-  let { name, initialState, id, settingsArrayIndex } = props
+  let { name, initialState, id, storeKey } = props
   
-  const [optionState, setOptionState] = useState(initialState)
+  // create custom key for this one
+  const toggleStoreKey = `${storeKey}/${name}`
+
+  let [optionState, setOptionState] = useState(initialState)
+  let [loadFlag, setLoadFlag] = useState(false)
 
   const toggleSwitch = () => setOptionState(previousState => !previousState)
+
+  // Load toggle setting if it exists
+  useEffect(() => {
+    async function loadToggleState () {
+      const state = await AsyncStorage.getItem(toggleStoreKey)
+      if (typeof state === typeof 'String') {
+        if (state === 'false') {
+          setOptionState(false)
+        } else {
+          setOptionState (true)
+        }
+      }
+      setLoadFlag(true)
+    }
+    loadToggleState()
+  }, [])
+
+  // Store toggle setting if it changes
+  useEffect(() => {
+    async function saveToggleState () {
+      if (loadFlag) {
+        //Alert.alert(`set ${toggleStoreKey} to ${String(optionState)}`)
+        await AsyncStorage.setItem(toggleStoreKey, String(optionState))
+      }
+    }
+    saveToggleState()
+  }, [optionState])
+
 
   return (
     <View>
@@ -81,35 +106,31 @@ function ToggleOption (props) {
 }
 
 function SelectionOption (props) {
-  let { name, options, selected, updateSettings, settingsIndex } = props
+  let { name, options, selected, storeKey } = props
 
-  const [activeOption, setActiveOption] = useState(options[selected])
+  let [activeOption, setActiveOption] = useState(options[selected])
+  let [loadFlag, setLoadFlag] = useState(false)  
 
-  /*
+  // Load activeOption if it previously existed in store
   useEffect(() => {
-    // Update Cache
-    async function saveOptionChange () {
-      try {
-        Alert.alert("clean-up hook called")
-        let currentData = await AsyncStorage.getItem(SettingsCacheKey)
-        currentData = (currentData) ? JSON.parse(currentData) : getDefaultSettings()
-        currentData[Number(settingsArrayIndex)].setting.selected = options.indexOf(activeOption)
-        await AsyncStorage.setItem(SettingsCacheKey, JSON.stringify(currentData))
-      } catch (e) {
-        Alert.alert(e)
+    async function loadOption () {
+      const storedIndex = await AsyncStorage.getItem(storeKey)
+      if (storedIndex) {
+        setActiveOption (options[Number(storedIndex)])
+      }
+      setLoadFlag(true)
+    }
+    loadOption()
+  }, [])
+
+  // Store new setting
+  useEffect(() => {
+    async function storeNewOption (){
+      if (loadFlag) {
+        await AsyncStorage.setItem(storeKey, String(options.indexOf(activeOption)))
       }
     }
-    return saveOptionChange
-  }, [activeOption])
-  */
-
-  useEffect(() => {
-    updateSettings(oldValue => {
-      Alert.alert(`updating ${oldValue[Number(settingsIndex)].setting.selected} to ${options.indexOf(activeOption)}`)
-      let newValue = oldValue
-      newValue[Number(settingsIndex)].setting.selected = options.indexOf(activeOption)
-      return newValue
-    })
+    storeNewOption()
   }, [activeOption])
 
   return (
@@ -131,82 +152,9 @@ function SelectionOption (props) {
   )
 }
 
-/*
-// Shoutout to @edwinvrgs here https://github.com/react-native-async-storage/async-storage/issues/32
-function settingsPersist (key) {
-  const [settings, updateSettingsValue] = useState(getDefaultSettings())
-  const [updated, setUpdated] = useState(false)
-
-  async function getStorageValue() {
-    let value = getDefaultSettings()
-    try {
-      value = JSON.parse(await AsyncStorage.getItem(key)) || getDefaultSettings()
-    } catch (e) {
-      // error
-    } finally {
-      updateSettingsValue(value)
-      setUpdated(true)
-    }
-  }
-
-  async function updateStorage(newValue) {
-    if (newValue !== null) {
-    try {
-      await AsyncStorage.setItem(key, JSON.stringify(newValue))
-    } catch (e) {
-    } finally {
-      setUpdated(false)
-      getStorageValue()
-    }
-    }
-  }
-  useEffect(() => {
-    getStorageValue()
-  }, [updated])
-  return [settings, updateStorage]
-}
-*/
-
 export function Configuration (props) {
 
-  let [Settings, setSettings] = useState(null)
-
-  //let [Settings, updateSettings] = settingsPersist()
-  
-
-  // Check if we have already saved prior settings for this user
-  useEffect( () => {
-    async function checkCache() {
-      try {
-        const savedSettings = await AsyncStorage.getItem(SettingsCacheKey)
-        if (savedSettings) {
-          // Alert.alert("recovered cached stuff!" + String( JSON.parse(savedSettings[1].setting.selected) ))
-          setSettings(JSON.parse(savedSettings))
-        } else {
-          setSettings(getDefaultSettings())
-        }
-      } catch (e) {
-        // error catch
-        // Alert.alert(e)
-      }
-    }
-
-    checkCache();
-  }, [])
-
-  // Update settings after setSettings call
-  useEffect( () => {
-    async function updatePersistentStore() {
-      try {
-        // Alert.alert('CHANGING STUFF')
-        await AsyncStorage.setItem(SettingsCacheKey, JSON.stringify(Settings))
-      } catch (e) {
-        Alert.alert(e)
-      }
-    }
-    updatePersistentStore()
-  }, [Settings])
-
+  const Settings = getDefaultSettings()
 
   const renderSetting = ({item}) => {
     let {name, type, options, selected} = item.setting
@@ -220,8 +168,7 @@ export function Configuration (props) {
               name={name}
               options={options}
               selected={selected}
-              updateSettings={setSettings}
-              settingsIndex={item.id}
+              storeKey={item.storeKey}
             />
           </View>
         )
@@ -231,7 +178,7 @@ export function Configuration (props) {
             <Text style={styles.optionHeader}>{name}</Text>
             <View>
               {Object.entries(options).map(([key, value], index) => {
-                return <ToggleOption key={index} name={key} initialState={value} settingsArrayIndex={item.id} />
+                return <ToggleOption key={index} name={key} initialState={value} storeKey={item.storeKey} />
               })}
             </View>
           </View>
