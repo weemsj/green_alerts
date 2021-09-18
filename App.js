@@ -1,5 +1,6 @@
 import React, { Component, useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
+
 import {
   Platform,
   StyleSheet,
@@ -8,6 +9,7 @@ import {
   View,
   Button,
 } from 'react-native';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
@@ -41,8 +43,8 @@ const AppNavigator = createStackNavigator(
     },
     Config: {
       screen: Configuration,
-      navigationOptions: {}
-    }
+      navigationOptions: {},
+    },
   },
   {
     initialRouteName: 'Home',

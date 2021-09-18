@@ -5,8 +5,6 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
 import Header from './header';
-import SignUp from './SignUp';
-import SignIn from './SignIn';
 
 function HomeScreen(props) {
   let { navigation } = props;
