@@ -1,15 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, TextInput, View, Button } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, TextInput, View, Button, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Header from './components/header';
 import SignUp from './components/SignUp';
-import Configuration from './components/config';
+import { Configuration } from './components/config';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, Button, Platform } from 'react-native';
 
 // Create Navigation Stack (used to move between screens)
 const Stack = createNativeStackNavigator();
@@ -19,14 +17,14 @@ Stack.navigationOptions = ({ navigation }) => {
   };
 };
 
+// onPress={() => navigation.navigate('Config')}
+
 function HomeScreen(props) {
   let { navigation } = props;
   return (
     <View style={styles.container}>
-      <Header />
+      <Header navigation={navigation} />
       <SignUp />
-      <Button title='Settings' onPress={() => navigation.navigate('Config')} />
-      <Text>Open up App.js to start working on your app!</Text>
       <StatusBar style='auto' />
     </View>
   );
