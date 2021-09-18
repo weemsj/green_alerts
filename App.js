@@ -1,49 +1,55 @@
+import React, { Component, useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, TextInput, View, Button, Platform } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Button,
+} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from 'react-navigation-stack';
+import { createAppContainer } from 'react-navigation';
+
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Header from './components/header';
+
+import HomeScreen from './components/Homescreen';
+import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import { Configuration } from './components/config';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 
 // Create Navigation Stack (used to move between screens)
-const Stack = createNativeStackNavigator();
-Stack.navigationOptions = ({ navigation }) => {
-  return {
-    tabBarVisible: false,
-  };
-};
-
-// onPress={() => navigation.navigate('Config')}
-
-function HomeScreen(props) {
-  let { navigation } = props;
-  return (
-    <View style={styles.container}>
-      <Header navigation={navigation} />
-      <SignUp />
-      <StatusBar style='auto' />
-    </View>
-  );
-}
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName='Home'>
-        <Stack.Screen
-          name='Home'
-          component={HomeScreen}
-          options={{ title: 'Landing Page' }}
-        />
-        <Stack.Screen name='Config' component={Configuration} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+  return <AppContainer />;
 }
+
+const AppNavigator = createStackNavigator(
+  {
+    Home: {
+      screen: HomeScreen,
+    },
+    SignUp: {
+      screen: SignUp,
+    },
+    SignIn: {
+      screen: SignIn,
+    },
+    Config: {
+      screen: Configuration,
+      navigationOptions: {}
+    }
+  },
+  {
+    initialRouteName: 'Home',
+  }
+);
+
+const AppContainer = createAppContainer(AppNavigator);
 
 /* source: docs.expo.dev scheduled-notifications */
 Notifications.setNotificationHandler({
@@ -54,27 +60,33 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export default function App() {
+function Tok() {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
 
     // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-    });
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
 
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
@@ -85,15 +97,21 @@ export default function App() {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'space-around',
-      }}>
+      }}
+    >
       <Text>Your expo push token: {expoPushToken}</Text>
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Title: {notification && notification.request.content.title} </Text>
+        <Text>
+          Title: {notification && notification.request.content.title}{' '}
+        </Text>
         <Text>Body: {notification && notification.request.content.body}</Text>
-        <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
+        <Text>
+          Data:{' '}
+          {notification && JSON.stringify(notification.request.content.data)}
+        </Text>
       </View>
       <Button
-        title="Press to schedule a Notification"
+        title='Press to schedule a Notification'
         onPress={async () => {
           await schedulePushNotification();
         }}
@@ -106,8 +124,8 @@ export default function App() {
 async function schedulePushNotification() {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: 'Green Alerts',  
-      body: "Dont't for get to recycle today!",  // we need to make the body change with each alert, I(Jacque) suggest doing this by adding a id tag for referencing, Thoughts?
+      title: 'Green Alerts',
+      body: "Dont't for get to recycle today!", // we need to make the body change with each alert, I(Jacque) suggest doing this by adding a id tag for referencing, Thoughts?
       data: { data: 'goes here' },
     },
     trigger: { seconds: 2 },
@@ -117,7 +135,8 @@ async function schedulePushNotification() {
 async function registerForPushNotificationsAsync() {
   let token;
   if (Constants.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
     if (existingStatus !== 'granted') {
       const { status } = await Notifications.requestPermissionsAsync();
@@ -144,12 +163,3 @@ async function registerForPushNotificationsAsync() {
 
   return token;
 }
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-  },
-});
