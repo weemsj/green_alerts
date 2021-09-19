@@ -13,7 +13,7 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
-
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Header from './components/header';
 
@@ -30,7 +30,7 @@ export default function App() {
   return <AppContainer />;
 }
 
-const AppNavigator = createStackNavigator(
+const AppNavigator = createBottomTabNavigator(
   {
     Home: {
       screen: HomeScreen,
@@ -38,9 +38,7 @@ const AppNavigator = createStackNavigator(
     SignUp: {
       screen: SignUp,
     },
-    SignIn: {
-      screen: SignIn,
-    },
+
     Config: {
       screen: Configuration,
       navigationOptions: {},

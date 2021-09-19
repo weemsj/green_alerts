@@ -12,14 +12,6 @@ function HomeScreen(props) {
     <View style={styles.container}>
       <Header navigation={navigation} />
       <StatusBar style='auto' />
-      <Button
-        title='Go to SignUp'
-        onPress={() => navigation.navigate('SignUp')}
-      />
-      <Button
-        title='Go to SignIn'
-        onPress={() => navigation.navigate('SignIn')}
-      />
     </View>
   );
 }

@@ -8,9 +8,9 @@ import { StyleSheet, Text, View, FlatList, Switch, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
 // Key used in AsyncStorage API
-export const SettingsCacheKey = "@GreenAlertsSettings"
+export const SettingsCacheKey = '@GreenAlertsSettings';
 
-function getDefaultSettings () { 
+function getDefaultSettings() {
   return [
     {
       id: '0',
@@ -28,9 +28,9 @@ function getDefaultSettings () {
           Food: true,
           EnergyEfficiency: true,
           Cleaning: true,
-          Recycle: true
-        }
-      }
+          Recycle: true,
+        },
+      },
     },
     {
       id: '1',
@@ -39,65 +39,63 @@ function getDefaultSettings () {
         name: 'Scheduling',
         type: 'select',
         options: ['weekly', 'daily', 'hourly'],
-        selected: 0
-      }
-    }
-  ]
+        selected: 0,
+      },
+    },
+  ];
 }
 
 // private component function
-function ToggleOption (props) {
+function ToggleOption(props) {
+  let { name, initialState, id, storeKey } = props;
 
-  let { name, initialState, id, storeKey } = props
-  
   // create custom key for this one
-  const toggleStoreKey = `${storeKey}/${name}`
+  const toggleStoreKey = `${storeKey}/${name}`;
 
-  let [optionState, setOptionState] = useState(initialState)
-  let [loadFlag, setLoadFlag] = useState(false)
+  let [optionState, setOptionState] = useState(initialState);
+  let [loadFlag, setLoadFlag] = useState(false);
 
-  const toggleSwitch = () => setOptionState(previousState => !previousState)
+  const toggleSwitch = () => setOptionState((previousState) => !previousState);
 
   // Load toggle setting if it exists
   useEffect(() => {
-    async function loadToggleState () {
-      const state = await AsyncStorage.getItem(toggleStoreKey)
+    async function loadToggleState() {
+      const state = await AsyncStorage.getItem(toggleStoreKey);
       if (typeof state === typeof 'String') {
         if (state === 'false') {
-          setOptionState(false)
+          setOptionState(false);
         } else {
-          setOptionState (true)
+          setOptionState(true);
         }
       }
-      setLoadFlag(true)
+      setLoadFlag(true);
     }
-    loadToggleState()
-  }, [])
+    loadToggleState();
+  }, []);
 
   // Store toggle setting if it changes
   useEffect(() => {
-    async function saveToggleState () {
+    async function saveToggleState() {
       if (loadFlag) {
         //Alert.alert(`set ${toggleStoreKey} to ${String(optionState)}`)
-        await AsyncStorage.setItem(toggleStoreKey, String(optionState))
+        await AsyncStorage.setItem(toggleStoreKey, String(optionState));
       }
     }
-    saveToggleState()
-  }, [optionState])
-
+    saveToggleState();
+  }, [optionState]);
 
   return (
     <View>
       <Text>
-        { 
+        {
           // Regex Magic to turn property name into readable string
-          // this took me a silly amount time to produce but it works 
-          name.split(/(?=[A-Z])/g).join(' ') 
+          // this took me a silly amount time to produce but it works
+          name.split(/(?=[A-Z])/g).join(' ')
         }
       </Text>
       <Switch
-        trackColor={{ false: "#767577", true: "#81b0ff" }}
-        thumbColor={optionState ? "#f5dd4b" : "#f4f3f4"}
+        trackColor={{ false: '#767577', true: '#81b0ff' }}
+        thumbColor={optionState ? '#f5dd4b' : '#f4f3f4'}
         onValueChange={toggleSwitch}
         value={optionState}
       />
@@ -105,84 +103,99 @@ function ToggleOption (props) {
   );
 }
 
-function SelectionOption (props) {
-  let { name, options, selected, storeKey } = props
+function SelectionOption(props) {
+  let { name, options, selected, storeKey } = props;
 
-  let [activeOption, setActiveOption] = useState(options[selected])
-  let [loadFlag, setLoadFlag] = useState(false)  
+  let [activeOption, setActiveOption] = useState(options[selected]);
+  let [loadFlag, setLoadFlag] = useState(false);
 
   // Load activeOption if it previously existed in store
   useEffect(() => {
-    async function loadOption () {
-      const storedIndex = await AsyncStorage.getItem(storeKey)
+    async function loadOption() {
+      const storedIndex = await AsyncStorage.getItem(storeKey);
       if (storedIndex) {
-        setActiveOption (options[Number(storedIndex)])
+        setActiveOption(options[Number(storedIndex)]);
       }
-      setLoadFlag(true)
+      setLoadFlag(true);
     }
-    loadOption()
-  }, [])
+    loadOption();
+  }, []);
 
   // Store new setting
   useEffect(() => {
-    async function storeNewOption (){
+    async function storeNewOption() {
       if (loadFlag) {
-        await AsyncStorage.setItem(storeKey, String(options.indexOf(activeOption)))
+        await AsyncStorage.setItem(
+          storeKey,
+          String(options.indexOf(activeOption))
+        );
       }
     }
-    storeNewOption()
-  }, [activeOption])
+    storeNewOption();
+  }, [activeOption]);
 
   return (
     <Picker
       selectedValue={activeOption}
-      onValueChange={(itemValue, itemIndex) => setActiveOption(previouState => {
-        return itemValue
-      })}
+      onValueChange={(itemValue, itemIndex) =>
+        setActiveOption((previouState) => {
+          return itemValue;
+        })
+      }
     >
       {
         // list each dropdown option
-        options.map( (option, index) => {
+        options.map((option, index) => {
           return (
-            <Picker.Item key={index}  label={option[0].toUpperCase() + option.substr(1)} value={option} />
-          )
+            <Picker.Item
+              key={index}
+              label={option[0].toUpperCase() + option.substr(1)}
+              value={option}
+            />
+          );
         })
       }
     </Picker>
-  )
+  );
 }
 
-export function Configuration (props) {
+export function Configuration(props) {
+  const Settings = getDefaultSettings();
 
-  const Settings = getDefaultSettings()
+  const renderSetting = ({ item }) => {
+    let { name, type, options, selected } = item.setting;
 
-  const renderSetting = ({item}) => {
-    let {name, type, options, selected} = item.setting
-
-    switch (type){
+    switch (type) {
       case 'select':
         return (
           <View>
             <Text style={styles.optionHeader}>{name}</Text>
-            <SelectionOption 
+            <SelectionOption
               name={name}
               options={options}
               selected={selected}
               storeKey={item.storeKey}
             />
           </View>
-        )
+        );
       case 'toggle':
         return (
           <View>
             <Text style={styles.optionHeader}>{name}</Text>
             <View>
               {Object.entries(options).map(([key, value], index) => {
-                return <ToggleOption key={index} name={key} initialState={value} storeKey={item.storeKey} />
+                return (
+                  <ToggleOption
+                    key={index}
+                    name={key}
+                    initialState={value}
+                    storeKey={item.storeKey}
+                  />
+                );
               })}
             </View>
           </View>
-        )
+        );
     }
 
     return (
@@ -190,7 +203,7 @@ export function Configuration (props) {
         <Text>Error: bad setting type attribute</Text>
       </View>
     );
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -198,25 +211,25 @@ export function Configuration (props) {
       <FlatList
         data={Settings}
         renderItem={renderSetting}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
       />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: '#fff',
   },
   settingsHeader: {
     fontSize: 25,
-    fontWeight: "bold",
-    textAlign: "center"
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   optionHeader: {
-    textAlign: "left",
+    textAlign: 'left',
     fontSize: 16,
-    fontWeight: "bold"
-  }
-})
+    fontWeight: 'bold',
+  },
+});
