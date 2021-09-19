@@ -58,7 +58,13 @@ async function runTests () {
     console.log(`we got an unexpected error: ${err}`)
   })
 
-
+  axios({
+    method: 'GET',
+    url: ENDPOINT + '/getTips'
+  }).then(res => {
+    console.log('get tips response')
+    console.log(res.data)
+  })
 
 }
 

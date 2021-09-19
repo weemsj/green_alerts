@@ -1,6 +1,5 @@
 import React, { Component, useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-
 import {
   Image,
   Platform,
@@ -118,32 +117,41 @@ function Tok() {
   }, []);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'space-around',
-      }}
-    >
-      <Text>Your expo push token: {expoPushToken}</Text>
-      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <Text>
-          Title: {notification && notification.request.content.title}{' '}
-        </Text>
-        <Text>Body: {notification && notification.request.content.body}</Text>
-        <Text>
-          Data:{' '}
-          {notification && JSON.stringify(notification.request.content.data)}
-        </Text>
+    <View>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName='Home'>
+          <Stack.Screen
+            name='Home'
+            component={HomeScreen}
+            options={{ title: 'Landing Page' }}
+          />
+          <Stack.Screen name='Config' component={Configuration} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'space-around',
+        }}>
+        <Text>Your expo push token: {expoPushToken}</Text>
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <Text>Title: {notification && notification.request.content.title} </Text>
+          <Text>Body: {notification && notification.request.content.body}</Text>
+          <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
+        </View>
+        <Button
+          title="Press to schedule a Notification"
+          onPress={async () => {
+            await schedulePushNotification();
+          }}
+        />
       </View>
-      <Button
-        title='Press to schedule a Notification'
-        onPress={async () => {
-          await schedulePushNotification();
-        }}
-      />
     </View>
+
   );
+
+
 }
 
 // Can use this function below, OR use Expo's Push Notification Tool-> https://expo.dev/notifications
