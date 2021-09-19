@@ -22,13 +22,12 @@ import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import { Configuration } from './components/config';
 import Constants from 'expo-constants';
-import * as Notifications from 'expo-notifications';
 import { AntDesign } from '@expo/vector-icons';
-// Create Navigation Stack (used to move between screens)
 
-export default function App() {
-  return <AppContainer />;
-}
+import { getTips } from './api'
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from 'expo-notifications';
 
 const AppNavigator = createBottomTabNavigator(
   {
@@ -85,73 +84,43 @@ Notifications.setNotificationHandler({
   }),
 });
 
-function Tok() {
+// Entry point for AppContainer
+export default function App() {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
 
+  // Setup the Notification Settings
+  // Boilerplate useEffect
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
+
+    async function loadTips() {
+      const tips = await getTips();
+      await AsyncStorage.setItem('@GreenAlertsTips', JSON.stringify(tips))
+      // console.log(tips)
+    }
+    loadTips()
+
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
     // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
+    notificationListener.current  = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
 
     return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
+      Notifications.removeNotificationSubscription(notificationListener.current);
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
 
-  return (
-    <View>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName='Home'>
-          <Stack.Screen
-            name='Home'
-            component={HomeScreen}
-            options={{ title: 'Landing Page' }}
-          />
-          <Stack.Screen name='Config' component={Configuration} />
-        </Stack.Navigator>
-      </NavigationContainer>
-      <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'space-around',
-        }}>
-        <Text>Your expo push token: {expoPushToken}</Text>
-        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-          <Text>Title: {notification && notification.request.content.title} </Text>
-          <Text>Body: {notification && notification.request.content.body}</Text>
-          <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
-        </View>
-        <Button
-          title="Press to schedule a Notification"
-          onPress={async () => {
-            await schedulePushNotification();
-          }}
-        />
-      </View>
-    </View>
-
-  );
-
-
+  return <AppContainer />;
 }
 
 // Can use this function below, OR use Expo's Push Notification Tool-> https://expo.dev/notifications

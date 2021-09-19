@@ -8,7 +8,8 @@ export const API_ENDPOINT = 'http://161.35.231.54'
 
 export const tipStoreKey = '@GreenAlertsStoreAlerts'
 
-export function getTips() {
-  // todo: make api request for tips
-  return 1
+export async function getTips() {
+  // make api request for tips
+  const response = await fetch(`${API_ENDPOINT}/getTips`)
+  return response.json()
 }
