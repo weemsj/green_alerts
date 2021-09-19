@@ -21,6 +21,19 @@ app.use(express.json())
 // Read JSON data from file
 const dataStore = JSON.parse(fs.readFileSync(DATASTORE_FILENAME,{encoding:'utf8', flag:'r'}))
 
+function readTips () {
+  return fs.readFileSync('tips.tsv', {encoding: 'utf8', flag: 'r'})
+    .replace(/\r/g, '')
+    .split('\n')
+    .slice(1)
+    .map(ln => ln.split('\t'))
+    .map((pair) => { return { category: pair[0], tip: pair[1] } })
+}
+
+// Read tip data from .tsv 
+const tips = readTips()
+
+
 // in case we need to reset the file
 function resetFile() {
   fs.writeFileSync(DATASTORE_FILENAME, JSON.stringify({
@@ -64,6 +77,11 @@ app.get("/getUser", (req, res) => {
   }
 
   return res.status(400).send('User does not exist and/or bad credentials')
+})
+
+// route to obtain tip data
+app.get("/getTips", (req, res) => {
+  return res.status(200).send(JSON.stringify(tips))
 })
 
 const PORT = process.env.PORT || 5000
