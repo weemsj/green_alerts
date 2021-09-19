@@ -1,6 +1,7 @@
 import Header from './header';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, createRef } from 'react';
+import { API_ENDPOINT } from '../api';
 import {
   Keyboard,
   Pressable,
@@ -10,6 +11,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   View,
+  Alert
 } from 'react-native';
 
 function Signup(props) {
@@ -42,6 +44,22 @@ function Signup(props) {
         password: password,
       };
       console.log(payload);
+
+      // Upload content to API (⌐■_■)
+      fetch ( `${API_ENDPOINT}/addUser` , {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      }).then( res => {
+        // if response was successful
+        Alert.alert('Successfully registered!')
+        // Ok--at this point we got the user registered so we can cache the user
+        // info in asyncstorage possibly and maybe move to another component page?
+
+      }).catch( err => {
+        // if error occuret
+        Alert.alert('Something went wrong!')
+      })
+
     } catch (error) {
       console.log('Handle Submit Error');
     }
