@@ -56,7 +56,7 @@ app.post("/addUser", (req, res) => {
   dataStore.users[name] = {password: HASH(password), email}
   
   // doing a blocking file write here because I hate the 
-  // cloud and I want it this VM to suffer
+  // cloud and I want this VM to suffer
   fs.writeFileSync(DATASTORE_FILENAME, JSON.stringify(dataStore))
 
   res.status(200).send('User added')
