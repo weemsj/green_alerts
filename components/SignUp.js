@@ -1,6 +1,7 @@
 import Header from './header';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState, createRef } from 'react';
+import React, { useState } from 'react';
+
 import {
   Keyboard,
   Pressable,
@@ -59,7 +60,7 @@ function Signup(props) {
           <TextInput
             style={styles.input}
             type='Name'
-            placeholder='Enter Your Name'
+            placeholder='Name'
             onChangeText={(name) => setName(name)}
             value={name}
             required='True'
@@ -97,12 +98,12 @@ function Signup(props) {
 const styles = StyleSheet.create({
   input: {
     height: 40,
-    width: 240,
+    width: '75%',
     margin: 12,
     borderWidth: 1,
     padding: 10,
     borderRadius: 10,
-    borderColor: 'black',
+    borderColor: 'grey',
     borderWidth: 2,
     backgroundColor: 'lightgreen',
     fontWeight: 'bold',
@@ -116,6 +117,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'orange',
     width: 200,
     alignSelf: 'center',
+    marginTop: 10,
   },
   loginText: {
     color: '#3740FE',

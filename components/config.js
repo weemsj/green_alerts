@@ -6,7 +6,8 @@ import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, Text, View, FlatList, Switch, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-
+import Header from './header';
+import { useNavigation } from '@react-navigation/native';
 // Key used in AsyncStorage API
 export const SettingsCacheKey = '@GreenAlertsSettings';
 
@@ -207,6 +208,7 @@ export function Configuration(props) {
 
   return (
     <View style={styles.container}>
+      <Header />
       <Text style={styles.settingsHeader}>Settings</Text>
       <FlatList
         data={Settings}
