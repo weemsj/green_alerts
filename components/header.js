@@ -1,28 +1,41 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { Fontisto } from '@expo/vector-icons';
-import Constant from 'expo-constants';
+import {
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 
 export default function Header(props) {
   let { navigation } = props;
   return (
-    <View style={styles.header}>
-      <Text style={styles.headerText}>Green Alerts </Text>
-      <TouchableOpacity onPress={() => navigation.navigate('Config')}>
-        <Fontisto style={styles.gear} name='spinner-cog' color='black' />
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Green Alerts </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Config')}>
+          <AntDesign style={styles.gear} name='setting' color='black' />
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
-
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#1ca75d',
+    height: STATUSBAR_HEIGHT,
+    width: '100%',
+  },
   header: {
     width: '100%',
-    height: 60,
+    height: 50,
     flexDirection: 'row',
-    backgroundColor: 'green',
+    backgroundColor: '#1ca75d',
     alignItems: 'center',
-    marginTop: Constant.statusBarHeight,
   },
   headerText: {
     fontWeight: 'bold',

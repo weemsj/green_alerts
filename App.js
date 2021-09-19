@@ -1,7 +1,15 @@
 import React, { Component, useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, TextInput, View, Button, Platform  } from 'react-native';
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Button,
+} from 'react-native';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
@@ -15,7 +23,7 @@ import SignUp from './components/SignUp';
 import { Configuration } from './components/config';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-
+import { AntDesign } from '@expo/vector-icons';
 // Create Navigation Stack (used to move between screens)
 
 export default function App() {
@@ -26,18 +34,43 @@ const AppNavigator = createBottomTabNavigator(
   {
     Home: {
       screen: HomeScreen,
+      navigationOptions: {
+        tabBarLabel: 'Home',
+        tabBarIcon: ({ tintColor }) => (
+          <AntDesign name='home' size={24} color='black' />
+        ),
+      },
     },
     SignUp: {
       screen: SignUp,
+      navigationOptions: {
+        tabBarLabel: 'Sign Up',
+        tabBarIcon: ({ tintColor }) => (
+          <AntDesign name='adduser' size={24} color='black' />
+        ),
+      },
     },
 
     Config: {
       screen: Configuration,
-      navigationOptions: {},
+      navigationOptions: {
+        tabBarLabel: 'Config',
+        tabBarIcon: ({ tintColor }) => (
+          <AntDesign name='setting' size={24} color='black' />
+        ),
+      },
     },
   },
   {
     initialRouteName: 'Home',
+    tabBarOptions: {
+      inactiveTintColor: 'grey',
+      activeTintColor: 'green',
+      labelStyle: {
+        fontWeight: 'bold',
+        fontSize: 13,
+      },
+    },
   }
 );
 
