@@ -8,6 +8,7 @@ import {
   TextInput,
   View,
   Button,
+  Alert,
 } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -24,7 +25,7 @@ import { Configuration } from './components/config';
 import Constants from 'expo-constants';
 import { AntDesign } from '@expo/vector-icons';
 
-import { getTips } from './api'
+import { getTips } from './api';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
@@ -94,28 +95,35 @@ export default function App() {
   // Setup the Notification Settings
   // Boilerplate useEffect
   useEffect(() => {
-
     async function loadTips() {
       const tips = await getTips();
-      await AsyncStorage.setItem('@GreenAlertsTips', JSON.stringify(tips))
+      await AsyncStorage.setItem('@GreenAlertsTips', JSON.stringify(tips));
       // console.log(tips)
     }
-    loadTips()
+    loadTips();
 
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
 
     // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current  = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-    });
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        let body = response.notification.request.content.body;
+        console.log(response);
+        alert(body);
+      });
 
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
